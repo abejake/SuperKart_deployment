@@ -1,6 +1,7 @@
 
 # Import necessary libraries
 import os
+import traceback
 import numpy as np
 import joblib  # For loading the serialized model
 import pandas as pd  # For data manipulation
@@ -13,6 +14,14 @@ superkart_api = Flask("SuperKart")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(BASE_DIR, "superkart_model.joblib")
 model = joblib.load(model_path)
+
+# Global error handler to catch exceptions and return the traceback as JSON
+@superkart_api.errorhandler(Exception)
+def handle_exception(e):
+    return jsonify({
+        "error": str(e),
+        "traceback": traceback.format_exc()
+    }), 500
 
 # Define a route for the home page
 @superkart_api.get('/')
