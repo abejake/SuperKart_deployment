@@ -1,7 +1,5 @@
 
 # Import necessary libraries
-import os
-import traceback
 import numpy as np
 import joblib  # For loading the serialized model
 import pandas as pd  # For data manipulation
@@ -10,18 +8,8 @@ from flask import Flask, request, jsonify  # For creating the Flask API
 # Initialize Flask app with a name
 superkart_api = Flask("SuperKart")
 
-# Load the trained model dynamically using the script's absolute directory path
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(BASE_DIR, "superkart_model.joblib")
-model = joblib.load(model_path)
-
-# Global error handler to catch exceptions and return the traceback as JSON
-@superkart_api.errorhandler(Exception)
-def handle_exception(e):
-    return jsonify({
-        "error": str(e),
-        "traceback": traceback.format_exc()
-    }), 500
+# Load the trained model
+model = joblib.load("superkart_model.joblib")
 
 # Define a route for the home page
 @superkart_api.get('/')
@@ -73,6 +61,7 @@ def predict_sales_batch():
     output_dict = {str(i): round(pred, 2) for i, pred in enumerate(predictions)}
 
     return output_dict
+
 
 # Run the Flask app in debug mode
 if __name__ == '__main__':
