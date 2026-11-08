@@ -1,5 +1,6 @@
 
 # Import necessary libraries
+import os
 import numpy as np
 import joblib  # For loading the serialized model
 import pandas as pd  # For data manipulation
@@ -8,8 +9,13 @@ from flask import Flask, request, jsonify  # For creating the Flask API
 # Initialize Flask app with a name
 superkart_api = Flask("SuperKart")
 
+# Handle pathing inside the Docker container structure
+model_path = "superkart_model.joblib"
+if not os.path.exists(model_path):
+    model_path = "backend/superkart_model.joblib"
+
 # Load the trained model
-model = joblib.load("superkart_model.joblib")
+model = joblib.load(model_path)
 
 # Define a route for the home page
 @superkart_api.route('/')
